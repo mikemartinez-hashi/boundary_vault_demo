@@ -1,0 +1,18 @@
+# Copy to terraform.tfvars and fill in. terraform.tfvars is gitignored.
+
+# ---------- AWS ----------
+region      = "us-east-1"
+environment = "demo"
+owner       = "SE Team"
+key_name  = "linux-demo-kp" # optional break-glass key pair
+
+# ---------- HCP Boundary ----------
+boundary_addr           = "https://xxxxxxx-149b-xxxxxx-8b78-xxxxxxx.boundary.hashicorp.cloud"
+boundary_auth_method_id = "xxxxxxxxxxx"
+boundary_login_name     = "xxxxxxx"
+boundary_password       = "xxxxxxxx"
+
+# ---------- HCP Vault (public endpoint must be enabled) ----------
+vault_address     = "https://<cluster>.z1.hashicorp.cloud:8200"
+vault_admin_token = "hvs.XXXXXXXX"
+vault_namespace   = "admin"
