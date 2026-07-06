@@ -36,4 +36,5 @@ output "connect_windows" {
 output "authenticate" {
   description = "Authenticate the Boundary CLI first"
   value       = "BOUNDARY_ADDR=${var.boundary_addr} boundary authenticate password -auth-method-id ${var.boundary_auth_method_id} -login-name ${var.boundary_login_name}"
+  sensitive   = true
 }
