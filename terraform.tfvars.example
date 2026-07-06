@@ -1,18 +1,29 @@
-# Copy to terraform.tfvars and fill in. terraform.tfvars is gitignored.
+# This deployment runs in HCP Terraform. Most values come from variable sets,
+# not this file. Kept as a reference (and for local runs).
 
-# ---------- AWS ----------
+# ---- Provided by HCP Terraform variable sets (do NOT set here) ----
+#
+# Vault variable set (Vault-backed dynamic provider credentials, env category):
+#   TFC_VAULT_PROVIDER_AUTH = true
+#   TFC_VAULT_ADDR          = <hcp vault address>   (sensitive)
+#   TFC_VAULT_NAMESPACE     = admin
+#   TFC_VAULT_RUN_ROLE      = tfc-admin-role
+#
+# boundary_config variable set (terraform category):
+#   boundary_addr           = https://<cluster-uuid>.boundary.hashicorp.cloud
+#   boundary_auth_method_id = ampw_XXXX             (sensitive)
+#   boundary_login_name     = hashi-admin
+#   boundary_password       = ...                   (sensitive)
+
+# ---- Still set on the workspace (or here for local runs) ----
+
 region      = "us-east-1"
 environment = "demo"
 owner       = "SE Team"
-key_name  = "linux-demo-kp" # optional break-glass key pair
+key_name    = "linux-demo-kp" # optional break-glass key pair
 
-# ---------- HCP Boundary ----------
-boundary_addr           = "https://xxxxxxx-149b-xxxxxx-8b78-xxxxxxx.boundary.hashicorp.cloud"
-boundary_auth_method_id = "xxxxxxxxxxx"
-boundary_login_name     = "xxxxxxx"
-boundary_password       = "xxxxxxxx"
-
-# ---------- HCP Vault (public endpoint must be enabled) ----------
-vault_address     = "https://<cluster>.z1.hashicorp.cloud:8200"
-vault_admin_token = "hvs.XXXXXXXX"
-vault_namespace   = "admin"
+# Address Boundary's credential store uses to reach HCP Vault.
+# Same value as TFC_VAULT_ADDR, but needed as a terraform variable because
+# env-category vars aren't readable inside the config.
+vault_address   = "https://<cluster>.z1.hashicorp.cloud:8200"
+vault_namespace = "admin"

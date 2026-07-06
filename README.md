@@ -14,19 +14,16 @@ Single `terraform apply` that stands up a complete HCP Boundary + HCP Vault acce
 
 ## Prerequisites
 
-1. **HCP Boundary cluster** (any tier — brokered credentials work on Standard) with the admin login and password auth method ID (`ampw_...`, shown on the cluster's Auth Methods page)
-2. **HCP Vault cluster** with the **public endpoint enabled** (Boundary's control plane and your Terraform run both reach it over the public address) and an admin token
-3. **AWS credentials** in your shell (SE sandbox account — the hc-base AMIs from `888995627335` must be visible in your region)
-4. Terraform >= 1.6 and the `boundary` CLI locally
+This deployment runs in **HCP Terraform**. The workspace needs:
+
+1. **HCP Boundary cluster** (any tier — brokered credentials work on Standard). Wired via the `boundary_config` variable set (terraform category): `boundary_addr`, `boundary_auth_method_id` (`ampw_...` from the cluster's Auth Methods page), `boundary_login_name`, `boundary_password`.
+2. **HCP Vault cluster** with the **public endpoint enabled**. The Vault provider authenticates via HCP Terraform's Vault-backed dynamic credentials — set the Vault variable set (env category): `TFC_VAULT_PROVIDER_AUTH=true`, `TFC_VAULT_ADDR`, `TFC_VAULT_NAMESPACE=admin`, `TFC_VAULT_RUN_ROLE=tfc-admin-role`. The `tfc-admin-role` Vault role must have a policy that can create a KV mount, write secrets, create policies, and **create an orphan token** (`auth/token/create-orphan` / sudo) with the `boundary-controller` and `boundary-demo-kv-read` policies attached — otherwise the `vault_token.boundary` resource fails at apply.
+3. **AWS credentials** for the workspace (dynamic provider credentials or an AWS var set). The hc-base AMIs from `888995627335` must be visible in `region`.
+4. Workspace variable `vault_address` (the HCP Vault public address, same value as `TFC_VAULT_ADDR`) — Boundary's credential store needs it as a terraform-readable variable since env-category vars aren't visible inside the config.
 
 ## Run it
 
-```bash
-cp terraform.tfvars.example terraform.tfvars
-# fill in the Boundary/Vault values
-terraform init
-terraform apply
-```
+Queue a plan/apply in the HCP Terraform workspace (VCS-driven or CLI-driven). No `terraform.tfvars` for secrets — everything comes from the variable sets above.
 
 Give the instances ~3–5 minutes after apply for user_data to finish (Windows takes the longest; the worker registers within ~1 minute).
 

@@ -3,6 +3,7 @@
 variable "region" {
   description = "AWS Region"
   type        = string
+  default     = "us-east-1"
 }
 
 variable "environment" {
@@ -71,20 +72,19 @@ variable "boundary_password" {
 }
 
 # ---------- HCP Vault ----------
+# NOTE: The Vault *provider* is authenticated by HCP Terraform's Vault-backed
+# dynamic credentials (TFC_VAULT_* env vars), so no address/token variable is
+# needed for it. The two variables below are used only to tell the Boundary
+# credential store how to reach Vault — Boundary's control plane connects to
+# the HCP Vault public endpoint independently of this Terraform run.
 
 variable "vault_address" {
-  description = "HCP Vault public address, e.g. https://<cluster>.hashicorp.cloud:8200"
+  description = "HCP Vault public address Boundary uses to reach Vault, e.g. https://<cluster>.hashicorp.cloud:8200"
   type        = string
-}
-
-variable "vault_admin_token" {
-  description = "HCP Vault admin token (used by Terraform to configure Vault)"
-  type        = string
-  sensitive   = true
 }
 
 variable "vault_namespace" {
-  description = "Vault namespace (HCP Vault uses 'admin' by default)"
+  description = "Vault namespace for the Boundary credential store (HCP Vault uses 'admin')"
   type        = string
   default     = "admin"
 }
