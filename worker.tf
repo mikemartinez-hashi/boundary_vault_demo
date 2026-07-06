@@ -6,10 +6,22 @@ locals {
   hcp_boundary_cluster_id = split(".", replace(var.boundary_addr, "https://", ""))[0]
 }
 
+# Rotation lever: the worker's activation token is single-use, so re-registering
+# means recreating boundary_worker.aws. Bump var.worker_token_rotation (in the
+# HCP Terraform workspace, no code change needed) and apply — that replaces this
+# resource with a fresh token and cascades a rebuild of the worker instance.
+resource "terraform_data" "worker_token_rotation" {
+  input = var.worker_token_rotation
+}
+
 resource "boundary_worker" "aws" {
   scope_id    = "global"
   name        = lower("aws-worker-${var.environment}")
   description = "Self-managed worker in AWS for the Boundary + Vault demo"
+
+  lifecycle {
+    replace_triggered_by = [terraform_data.worker_token_rotation]
+  }
 }
 
 resource "aws_security_group" "boundary_worker" {

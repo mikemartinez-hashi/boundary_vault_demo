@@ -48,6 +48,12 @@ variable "worker_instance_type" {
   default     = "t3.small"
 }
 
+variable "worker_token_rotation" {
+  description = "Bump this integer to force the Boundary worker to re-register with a fresh single-use activation token."
+  type        = number
+  default     = 1
+}
+
 # ---------- HCP Boundary ----------
 
 variable "boundary_addr" {
