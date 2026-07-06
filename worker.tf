@@ -50,5 +50,11 @@ resource "aws_instance" "boundary_worker" {
     activation_token        = boundary_worker.aws.controller_generated_activation_token
   })
 
+  # The activation token is SINGLE-USE. If this instance is ever replaced
+  # (e.g. a user_data edit triggers it) without also recreating
+  # boundary_worker.aws, the new instance inherits the already-spent token and
+  # loops on "node is not yet authorized". To rebuild the worker, always run:
+  #   terraform apply -replace=boundary_worker.aws
+  # which mints a fresh token and cascades a replacement of this instance.
   user_data_replace_on_change = true
 }
