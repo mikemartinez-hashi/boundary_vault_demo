@@ -6,10 +6,10 @@ provider "aws" {
 # Credentials come from the `boundary_config` variable set in HCP Terraform
 # (terraform-category vars), so they must be wired in explicitly here.
 provider "boundary" {
-  addr                            = var.boundary_addr
-  auth_method_id                  = var.boundary_auth_method_id
-  password_auth_method_login_name = var.boundary_login_name
-  password_auth_method_password   = var.boundary_password
+  addr                   = var.boundary_addr
+  auth_method_id         = var.boundary_auth_method_id
+  auth_method_login_name = var.boundary_login_name
+  auth_method_password   = var.boundary_password
 }
 
 # HCP Vault cluster.

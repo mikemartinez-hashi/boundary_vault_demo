@@ -8,7 +8,7 @@ locals {
 
 resource "boundary_worker" "aws" {
   scope_id    = "global"
-  name        = "aws-worker-${var.environment}"
+  name        = lower("aws-worker-${var.environment}")
   description = "Self-managed worker in AWS for the Boundary + Vault demo"
 }
 
