@@ -36,6 +36,7 @@ resource "aws_instance" "boundary_worker" {
   instance_type          = var.worker_instance_type
   key_name               = var.key_name
   vpc_security_group_ids = [aws_security_group.boundary_worker.id]
+  iam_instance_profile   = aws_iam_instance_profile.ssm_profile.name # debug via SSM Session Manager
 
   tags = {
     Name        = "boundary-worker-${var.environment}"
